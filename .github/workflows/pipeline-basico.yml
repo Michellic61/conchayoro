@@ -1,0 +1,37 @@
+name: pipeline-basico
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executa comando
+        run: echo "Configuração inicial do pipeline"
+
+  approval:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Aprovação Manual
+        uses: peter-evans/manual-approval-action@v2
+        with:
+          approvers: 'Michellic61'  
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: approval
+    steps:
+      - name: Deploy para S3
+        run: |
+          echo "Deploy para o S3..."
+          aws s3 cp ./seu_diretorio_de_build s3://seu-bucket-s3 --recursive
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-1'
+
+
+
+
