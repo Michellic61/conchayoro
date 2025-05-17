@@ -1,4 +1,4 @@
-name: integracao-ecr-ebs
+name: integracao-ecr-eb
 
 on:
   push:
