@@ -1,4 +1,3 @@
-
 import { Column, Model, Table, DataType } from 'sequelize-typescript';
 import { UUIDV4 } from 'sequelize';
 
@@ -24,3 +23,4 @@ export class Product extends Model {
   @Column({})
   rating: number;
 }
+
