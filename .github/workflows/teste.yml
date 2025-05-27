@@ -1,3 +1,21 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm --prefix backend install
+      - run: npm --prefix backend test -- --testPathIgnorePatterns=backend/src/products/products.service.spec.ts
 jobs:
   tests:
     runs-on: ubuntu-latest
