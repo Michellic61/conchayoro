@@ -37,4 +37,8 @@ jobs:
             -input=false -out=$TF_VAR_PLAN_FILE
      - run: |
             terraform -chdir=$TF_VAR_WORKING_DIR apply \
+<<<<<<< HEAD
             -auto-approve $TF_VAR_PLAN_FILE
+=======
+            -auto-approve $TF_VAR_PLAN_FILE
+>>>>>>> 6c94038 (infraestrutura inicial com terraform e workflows)

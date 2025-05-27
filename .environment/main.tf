@@ -89,4 +89,4 @@ resource "aws_elastic_beanstalk_environment" "cyo_ebef" {
     value     = "${var.Timeout}"
   }
   
-}
+

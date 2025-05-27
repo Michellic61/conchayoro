@@ -17,3 +17,4 @@ output "elastic_beanstalk_endpoint_url" {
   description = "elastic_beanstalk_endpoint_url"
   value       = aws_elastic_beanstalk_environment.cyo_ebef.endpoint_url
 }
+

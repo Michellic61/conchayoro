@@ -32,4 +32,8 @@ jobs:
            terraform -chdir=$TF_VAR_WORKING_DIR init \
            -backend-config="bucket=$S3_BUCKET" \
            -backend-config="key=$TF_VAR_STATE_FILE"
+<<<<<<< HEAD
     - run: terraform -chdir=$TF_VAR_WORKING_DIR destroy -auto-approve
+=======
+    - run: terraform -chdir=$TF_VAR_WORKING_DIR destroy -auto-approve
+>>>>>>> 6c94038 (infraestrutura inicial com terraform e workflows)
