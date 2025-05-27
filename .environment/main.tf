@@ -1,8 +1,7 @@
 resource "aws_ecr_repository" "cyo_ecr_repo" {
   name                 = "${var.PROJECT_NAME}/${var.MODULE_NAME}"
   image_tag_mutability = "MUTABLE"
-  force_delete          = true
-
+  force_delete = "true"
   image_scanning_configuration {
     scan_on_push = true
   }
@@ -41,7 +40,7 @@ resource "aws_elastic_beanstalk_environment" "cyo_ebef" {
     name      = "ServiceRole"
     value     = "LabRole"
   }
-
+  
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
@@ -89,4 +88,5 @@ resource "aws_elastic_beanstalk_environment" "cyo_ebef" {
     name      = "Timeout"
     value     = "${var.Timeout}"
   }
+  
 }
