@@ -2,6 +2,7 @@
 # pipeline-ecr-eb-provisioning.yml — workflow GitHub Actions
 # ------------------------------------------------------------
 # Este workflow realiza o provisionamento da infraestrutura
+# utilizando Terraform com backend S3 e Elastic Beanstalk
 
 name: provisioning ecr-eb
 
@@ -9,6 +10,7 @@ on:
   workflow_dispatch:
 
 env:
+  # 🔐 Credenciais e variáveis globais
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
@@ -22,6 +24,7 @@ jobs:
   provisioning:
     runs-on: ubuntu-latest
     env:
+      # 📦 Variáveis passadas ao Terraform automaticamente via TF_VAR_
       TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
       TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
       TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}
@@ -30,6 +33,7 @@ jobs:
       TF_VAR_WORKING_DIR: ".environment"
       TF_VAR_PLAN_FILE: "planfile"
       TF_VAR_STATE_FILE: "state/terraform.tfstate"
+
     steps:
       - name: 🔄 Checkout do código
         uses: actions/checkout@v4
@@ -37,11 +41,21 @@ jobs:
       - name: ⚙️ Instalar Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: 🧪 Verificar existência do bucket S3
+        run: |
+          if ! aws s3api head-bucket --bucket "$TF_VAR_S3_BUCKET" 2>/dev/null; then
+            echo "❌ O bucket '$TF_VAR_S3_BUCKET' não existe."
+            exit 1
+          else
+            echo "✅ Bucket '$TF_VAR_S3_BUCKET' encontrado."
+          fi
+
       - name: 🧱 Inicializar Terraform com backend S3
         run: |
           terraform -chdir=$TF_VAR_WORKING_DIR init \
             -backend-config="bucket=$TF_VAR_S3_BUCKET" \
-            -backend-config="key=$TF_VAR_STATE_FILE"
+            -backend-config="key=$TF_VAR_STATE_FILE" \
+            -backend-config="region=$TF_VAR_AWS_REGION"
 
       - name: 📝 Planejar infraestrutura
         run: |
