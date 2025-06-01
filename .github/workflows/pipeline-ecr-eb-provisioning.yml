@@ -25,20 +25,25 @@ jobs:
        TF_VAR_WORKING_DIR: ".environment"      
        TF_VAR_PLAN_FILE: "planfile"
        TF_VAR_STATE_FILE: "state/terraform.tfstate"
-     steps:    
-     - uses: actions/checkout@v4
-     - uses: hashicorp/setup-terraform@v3
-     - run: |
-            terraform -chdir=$TF_VAR_WORKING_DIR init \
+     steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Inicializar Terraform com backend S3
+        run: |
+          terraform -chdir=$TF_VAR_WORKING_DIR init \
             -backend-config="bucket=$S3_BUCKET" \
             -backend-config="key=$TF_VAR_STATE_FILE"
-     - run: |
-            terraform -chdir=$TF_VAR_WORKING_DIR plan \
+
+      - name: Planejar infraestrutura
+        run: |
+          terraform -chdir=$TF_VAR_WORKING_DIR plan \
             -input=false -out=$TF_VAR_PLAN_FILE
-     - run: |
-            terraform -chdir=$TF_VAR_WORKING_DIR apply \
-<<<<<<< HEAD
+
+      - name: Aplicar infraestrutura
+        run: |
+          terraform -chdir=$TF_VAR_WORKING_DIR apply \
             -auto-approve $TF_VAR_PLAN_FILE
-=======
-            -auto-approve $TF_VAR_PLAN_FILE
->>>>>>> 6c94038 (infraestrutura inicial com terraform e workflows)
