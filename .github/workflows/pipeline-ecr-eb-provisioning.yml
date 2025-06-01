@@ -1,7 +1,12 @@
+# ------------------------------------------------------------
+# pipeline-ecr-eb-provisioning.yml — workflow GitHub Actions
+# ------------------------------------------------------------
+# Este workflow realiza o provisionamento da infraestrutura
+
 name: provisioning ecr-eb
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -11,39 +16,39 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   PROJECT_NAME: ${{ vars.PROJECT_NAME }}
   MODULE_NAME: ${{ vars.MODULE_NAME }}
-  S3_BUCKET: ${{ vars.S3_BUCKET }}
-  
+  BUCKET_S3: ${{ vars.BUCKET_S3 }}
+
 jobs:
-    provisioning:
-     runs-on: ubuntu-latest
-     env:
-       TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
-       TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-       TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}       
-       TF_VAR_S3_BUCKET: ${{ vars.S3_BUCKET }}       
-       TF_VAR_SOLUTION_STACK_NAME: ${{ vars.STACK_NAME }}
-       TF_VAR_WORKING_DIR: ".environment"      
-       TF_VAR_PLAN_FILE: "planfile"
-       TF_VAR_STATE_FILE: "state/terraform.tfstate"
-     steps:
-      - name: Checkout do código
+  provisioning:
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+      TF_VAR_MODULE_NAME: ${{ vars.MODULE_NAME }}
+      TF_VAR_S3_BUCKET: ${{ vars.BUCKET_S3 }}
+      TF_VAR_SOLUTION_STACK_NAME: ${{ vars.STACK_NAME }}
+      TF_VAR_WORKING_DIR: ".environment"
+      TF_VAR_PLAN_FILE: "planfile"
+      TF_VAR_STATE_FILE: "state/terraform.tfstate"
+    steps:
+      - name: 🔄 Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Terraform
+      - name: ⚙️ Instalar Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Inicializar Terraform com backend S3
+      - name: 🧱 Inicializar Terraform com backend S3
         run: |
           terraform -chdir=$TF_VAR_WORKING_DIR init \
-            -backend-config="bucket=$S3_BUCKET" \
+            -backend-config="bucket=$BUCKET_S3" \
             -backend-config="key=$TF_VAR_STATE_FILE"
 
-      - name: Planejar infraestrutura
+      - name: 📝 Planejar infraestrutura
         run: |
           terraform -chdir=$TF_VAR_WORKING_DIR plan \
             -input=false -out=$TF_VAR_PLAN_FILE
 
-      - name: Aplicar infraestrutura
+      - name: 🚀 Aplicar infraestrutura
         run: |
           terraform -chdir=$TF_VAR_WORKING_DIR apply \
             -auto-approve $TF_VAR_PLAN_FILE
