@@ -18,7 +18,7 @@ resource "aws_elastic_beanstalk_application" "cyo_eba" {
 # Ambiente Elastic Beanstalk
 resource "aws_elastic_beanstalk_environment" "cyo_ebef" {
   # ⚠️ Ajuste aplicado para garantir mínimo de 4 caracteres exigido pela AWS
-  name                = "${var.MODULE_NAME}-env"
+  name                = "${var.MODULE_NAME}"
   application         = aws_elastic_beanstalk_application.cyo_eba.name
   solution_stack_name = var.SOLUTION_STACK_NAME
 
