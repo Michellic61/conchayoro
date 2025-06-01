@@ -1,7 +1,3 @@
-# ------------------------------------------------------------
-# pipeline-ecr-eb-provisioning.yml — workflow GitHub Actions
-# ------------------------------------------------------------
-
 name: provisioning ecr-eb
 
 on:
