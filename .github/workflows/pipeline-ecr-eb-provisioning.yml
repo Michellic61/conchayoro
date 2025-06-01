@@ -40,7 +40,7 @@ jobs:
       - name: 🧱 Inicializar Terraform com backend S3
         run: |
           terraform -chdir=$TF_VAR_WORKING_DIR init \
-            -backend-config="bucket=$BUCKET_S3" \
+            -backend-config="bucket=$TF_VAR_S3_BUCKET" \
             -backend-config="key=$TF_VAR_STATE_FILE"
 
       - name: 📝 Planejar infraestrutura
